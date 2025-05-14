@@ -1,0 +1,122 @@
+## Percobaan Open5GS & UERANSIM di VIrtualBox
+
+### 1.1 Tujuan 
+
+### 1.2 Yang di Butuhkan
+
+#### 1.1.1 Spesfikasi & Konfigurasi Jaringan Virtual Machine
+
+| **Name**              | **vCPU** |  **RAM** | **Netwoking**                     |
+|-----------------------|----------|----------|-----------------------------------|
+| Open5GS - Ubuntu      | 2        | 4 GB     | NAT, Host-Only : 10.10.10.2 Internal : 192.168.10.1 |
+| UERANSIM - Ubuntu     | 1        | 2 GB     | NAT, Host-Only : 10.10.10.3, Internal : 192.168.10.2 |
+
+#### 1.1.2 Software yang di gunakan
+
+- VirtualBox
+- Open5GS
+- UERANSIM
+
+### 1.3 Langkah - langkah Pembentukan Arsitektur
+
+#### 1.3.1 Server 1 : Open5GS - Ubuntu
+
+##### Fase 1 : Install MongoDB
+
+Impor kunci publik yang digunakan oleh sistem manajemen paket.
+
+```bash
+$ sudo apt update
+$ sudo apt install gnupg
+$ curl -fsSL https://pgp.mongodb.com/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+```
+Buat file daftar /etc/apt/sources.list.d/mongodb-org-8.0.list untuk versi Ubuntu. Untuk Ubuntu 22.04 LTS :
+
+```bash
+$ echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+```
+
+Pasang paket MongoDB.
+
+```bash
+$ sudo apt update
+$ sudo apt install -y mongodb-org
+$ sudo systemctl start mongod # (if '/usr/bin/mongod' is not running)
+$ sudo systemctl enable mongod # (ensure to automatically start it on system boot)
+```
+
+##### Fase 2 : Install Open5GS
+
+Untuk Ubuntu : 
+
+```bash
+$ sudo add-apt-repository ppa:open5gs/latest
+$ sudo apt update
+$ sudo apt install open5gs
+```
+
+##### Fase 4 : Install NodeJS untuk WebvUI
+
+Untuk Ubuntu : 
+
+```bash
+$ sudo apt update
+$ sudo apt install -y ca-certificates curl gnupg
+$ sudo mkdir -p /etc/apt/keyrings
+$ curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+$ NODE_MAJOR=20
+$ echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+```
+
+Jalankan update dan install
+
+```bash
+ $ sudo apt update
+ $ sudo apt install nodejs -y
+```
+
+##### Fase 5 : Install WebUI
+
+Install WebUI
+
+```bash
+$ curl -fsSL https://open5gs.org/open5gs/assets/webui/install | sudo -E bash -
+```
+
+Karena WebUI nya masih di broadcast ke localhost, jadi di ubah dulu ke 0.0.0.0 agar bisa di akses melallui Host :
+
+```bash
+$ nano /usr/lib/node_modules/open5gs/server/index.js
+```
+
+Sebelumnya :
+
+```javascript
+process.env.DB_URI = process.env.DB_URI || 'mongodb://localhost/open5gs';
+
+const _hostname = process.env.HOSTNAME || '127.0.0.1'; // Ubah bagian ini ke 0.0.0.0
+const port = process.env.PORT || 9999;
+
+const co = require('co');
+```
+
+Sesudah di ubah :
+
+```javascript
+process.env.DB_URI = process.env.DB_URI || 'mongodb://localhost/open5gs';
+
+const _hostname = process.env.HOSTNAME || '0.0.0.0';
+const port = process.env.PORT || 9999;
+
+const co = require('co');
+```
+
+Lalu restart webui-server
+
+```bash
+$ sudo systemctl restart open5gs-webui
+```
+
+Dan pada akhirnya WebUI bisa di akses :
+
+![alt text](image.png)
