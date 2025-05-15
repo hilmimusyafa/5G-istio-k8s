@@ -9,8 +9,8 @@
 - **UERANSIM**: Radio and UE device simulator to test built 5G networks.
 
 # To-Do List
-- [ ] Trying Open5GS and UERANSIM (Non-Kubernetes)
-- [ ] Trying Istio with base example
-- [ ] Making diagram of 5G Kubernetes Istio architecture
-- [ ] Making implentation of 5G Kubernetes (Non-Istio)
-- [ ] Making implentation of 5G Kubernetes with Istio
+- [x] Try Open5GS and UERANSIM (Non-Kubernetes)
+- [ ] Try Istio with base example
+- [ ] Make diagram of 5G Kubernetes Istio architecture
+- [ ] Implement 5G Kubernetes (Non-Istio)
+- [ ] Implement 5G Kubernetes with Istio
