@@ -11,6 +11,7 @@
 # To-Do List
 - [x] Try Open5GS and UERANSIM (Non-Kubernetes)
 - [ ] Try Istio with base example
+- [ ] Implement Open5GS in Kubernetes with srsRAN
 - [ ] Make diagram of 5G Kubernetes Istio architecture
 - [ ] Implement 5G Kubernetes (Non-Istio)
 - [ ] Implement 5G Kubernetes with Istio

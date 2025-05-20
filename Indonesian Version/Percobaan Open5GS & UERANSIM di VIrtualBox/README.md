@@ -19,7 +19,7 @@ Untuk mengetahui cara kerja dari dasar Open5G dan UERANSIM, dengan penerapan men
 - Open5GS
 - UERANSIM
 
-## 1.3 Langkah - langkah Pembentukan Arsitektur
+## 1.3 Langkah - langkah
 
 ### 1.3.1 Server 1 : Open5GS - Ubuntu
 
@@ -80,7 +80,7 @@ Jalankan update dan install
 
 #### Fase 5 : Install WebUI
 
-Install Open5Gs WebUI dengan perintah :
+Install Open5GS WebUI dengan perintah :
 
 ```bash
 $ curl -fsSL https://open5gs.org/open5gs/assets/webui/install | sudo -E bash -
@@ -124,7 +124,7 @@ Dan pada akhirnya WebUI bisa di akses, dengan mengakses http://{IP-HOST}:9999 (U
 
 ![alt text](images/image.png)
 
-#### Fase 6 : Mengatur Open5Gs - AMF
+#### Fase 6 : Mengatur Open5GS - AMF
 
 Mengubah file konfigurasi AMF : 
 
@@ -194,7 +194,7 @@ hilmi@open5gs-ubuntu:~$ sudo tail -f /var/log/open5gs/amf.log
 05/15 12:58:50.395: [sbi] INFO: Setup NF EndPoint(addr) [127.0.0.13:7777] (../lib/sbi/context.c:2113)
 ```
 
-#### Fase 7 : Mengatur Open5Gs - UPF
+#### Fase 7 : Mengatur Open5GS - UPF
 
 Sekarang ubah konfigurasi UPF :
 
