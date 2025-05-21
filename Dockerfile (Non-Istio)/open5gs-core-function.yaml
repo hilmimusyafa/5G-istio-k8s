@@ -1,0 +1,332 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nrf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: nrf
+  template:
+    metadata:
+      labels:
+        app: nrf
+    spec:
+      containers:
+      - name: nrf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-nrfd", "-c", "/etc/open5gs/nrf.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: nrf-config
+          mountPath: /etc/open5gs/nrf.yaml
+          subPath: nrf.yaml
+      volumes:
+      - name: nrf-config
+        configMap:
+          name: nrf-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scp
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: scp
+  template:
+    metadata:
+      labels:
+        app: scp
+    spec:
+      containers:
+      - name: scp
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-scpd", "-c", "/etc/open5gs/scp.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: scp-config
+          mountPath: /etc/open5gs/scp.yaml
+          subPath: scp.yaml
+      volumes:
+      - name: scp-config
+        configMap:
+          name: scp-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: amf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: amf
+  template:
+    metadata:
+      labels:
+        app: amf
+    spec:
+      containers:
+      - name: amf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-amfd", "-c", "/etc/open5gs/amf.yaml"]
+        ports:
+        - containerPort: 7777
+        - containerPort: 38412
+        volumeMounts:
+        - name: amf-config
+          mountPath: /etc/open5gs/amf.yaml
+          subPath: amf.yaml
+      volumes:
+      - name: amf-config
+        configMap:
+          name: amf-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: smf
+  template:
+    metadata:
+      labels:
+        app: smf
+    spec:
+      dnsPolicy: ClusterFirst
+      containers:
+      - name: smf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-smfd", "-c", "/etc/open5gs/smf.yaml"]
+        ports:
+        - containerPort: 7777
+        - containerPort: 8805
+        volumeMounts:
+        - name: smf-config
+          mountPath: /etc/open5gs/smf.yaml
+          subPath: smf.yaml
+      volumes:
+      - name: smf-config
+        configMap:
+          name: smf-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: upf
+  template:
+    metadata:
+      labels:
+        app: upf
+    spec:
+      hostNetwork: true
+      containers:
+      - name: upf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-upfd", "-c", "/etc/open5gs/upf.yaml"]
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["NET_ADMIN", "NET_RAW", "SYS_ADMIN"]
+        ports:
+        - containerPort: 8805
+        - containerPort: 2152
+        volumeMounts:
+        - name: upf-config
+          mountPath: /etc/open5gs/upf.yaml
+          subPath: upf.yaml
+        - name: tun-device
+          mountPath: /dev/net/tun
+      volumes:
+      - name: upf-config
+        configMap:
+          name: upf-config
+      - name: tun-device
+        hostPath:
+          path: /dev/net/tun
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ausf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: ausf
+  template:
+    metadata:
+      labels:
+        app: ausf
+    spec:
+      containers:
+      - name: ausf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-ausfd", "-c", "/etc/open5gs/ausf.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: ausf-config
+          mountPath: /etc/open5gs/ausf.yaml
+          subPath: ausf.yaml
+      volumes:
+      - name: ausf-config
+        configMap:
+          name: ausf-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udm
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: udm
+  template:
+    metadata:
+      labels:
+        app: udm
+    spec:
+      containers:
+      - name: udm
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-udmd", "-c", "/etc/open5gs/udm.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: udm-config
+          mountPath: /etc/open5gs/udm.yaml
+          subPath: udm.yaml
+      volumes:
+      - name: udm-config
+        configMap:
+          name: udm-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: pcf
+  template:
+    metadata:
+      labels:
+        app: pcf
+    spec:
+      containers:
+      - name: pcf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-pcfd", "-c", "/etc/open5gs/pcf.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: pcf-config
+          mountPath: /etc/open5gs/pcf.yaml
+          subPath: pcf.yaml
+      volumes:
+      - name: pcf-config
+        configMap:
+          name: pcf-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nssf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: nssf
+  template:
+    metadata:
+      labels:
+        app: nssf
+    spec:
+      containers:
+      - name: nssf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-nssfd", "-c", "/etc/open5gs/nssf.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: nssf-config
+          mountPath: /etc/open5gs/nssf.yaml
+          subPath: nssf.yaml
+      volumes:
+      - name: nssf-config
+        configMap:
+          name: nssf-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bsf
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: bsf
+  template:
+    metadata:
+      labels:
+        app: bsf
+    spec:
+      containers:
+      - name: bsf
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-bsfd", "-c", "/etc/open5gs/bsf.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: bsf-config
+          mountPath: /etc/open5gs/bsf.yaml
+          subPath: bsf.yaml
+      volumes:
+      - name: bsf-config
+        configMap:
+          name: bsf-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udr
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: udr
+  template:
+    metadata:
+      labels:
+        app: udr
+    spec:
+      containers:
+      - name: udr
+        image: gradiant/open5gs:2.7.5
+        command: ["open5gs-udrd", "-c", "/etc/open5gs/udr.yaml"]
+        ports:
+        - containerPort: 7777
+        volumeMounts:
+        - name: udr-config
+          mountPath: /etc/open5gs/udr.yaml
+          subPath: udr.yaml
+      volumes:
+      - name: udr-config
+        configMap:
+          name: udr-config

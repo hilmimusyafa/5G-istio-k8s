@@ -12,6 +12,7 @@ Untuk membuat penerapan 5G network dengan menggunakan Open5GS dan UERANSIM di Ku
 
 ### 1.3.1 Namespace 1 : 5G Core Namespace
 
+#### Fase 1 : Konfigurasi 
 
 ### 1.3.2 Namespace 2 : Default Namespace
 

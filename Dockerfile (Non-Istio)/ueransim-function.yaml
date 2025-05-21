@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gnb
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: gnb
+  template:
+    metadata:
+      labels:
+        app: gnb
+    spec:
+      dnsPolicy: ClusterFirst
+      containers:
+      - name: gnb
+        image: gradiant/ueransim:3.2.7
+        command: ["nr-gnb", "-c", "/etc/ueransim/open5gs-gnb.yaml"]
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN"]
+        ports:
+        - containerPort: 38412
+        - containerPort: 2152
+        volumeMounts:
+        - name: gnb-config
+          mountPath: /etc/ueransim/open5gs-gnb.yaml
+          subPath: open5gs-gnb.yaml
+      volumes:
+      - name: gnb-config
+        configMap:
+          name: gnb-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gnb-svc
+  namespace: default
+spec:
+  selector:
+    app: gnb
+  ports:
+  - name: ngap
+    port: 38412
+    targetPort: 38412
+    protocol: SCTP
+  - name: gtpu
+    port: 2152
+    targetPort: 2152
+    protocol: UDP
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ue
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: ue
+  template:
+    metadata:
+      labels:
+        app: ue
+    spec:
+      containers:
+      - name: ue
+        image: gradiant/ueransim:3.2.7
+        command: ["nr-ue", "-c", "/etc/ueransim/open5gs-ue.yaml"]
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["NET_ADMIN"]
+        volumeMounts:
+        - name: ue-config
+          mountPath: /etc/ueransim/open5gs-ue.yaml
+          subPath: open5gs-ue.yaml
+        - name: tun-device
+          mountPath: /dev/net/tun
+      volumes:
+      - name: ue-config
+        configMap:
+          name: ue-config
+      - name: tun-device
+        hostPath:
+          path: /dev/net/tun

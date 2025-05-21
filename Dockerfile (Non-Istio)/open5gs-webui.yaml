@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open5gs-webui
+  namespace: 5g-core
+spec:
+  selector:
+    matchLabels:
+      app: open5gs-webui
+  template:
+    metadata:
+      labels:
+        app: open5gs-webui
+    spec:
+      containers:
+      - name: open5gs-webui
+        image: gradiant/open5gs:2.7.5
+        env:
+        - name: HOSTNAME
+          value: "0.0.0.0"
+        - name: DB_URI
+          value: "mongodb://mongodb:27017/open5gs"
+        ports:
+        - containerPort: 9999
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: open5gs-webui-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: open5gs-webui
+  ports:
+  - port: 9999
+    targetPort: 9999
+  type: NodePort

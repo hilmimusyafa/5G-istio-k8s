@@ -1,0 +1,158 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nrf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: nrf
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scp-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: scp
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: amf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: amf
+  ports:
+  - name: sbi
+    port: 7777
+    targetPort: 7777
+  - name: ngap
+    port: 38412
+    targetPort: 38412
+    protocol: SCTP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: smf
+  ports:
+  - name: sbi
+    port: 7777
+    targetPort: 7777
+  - name: pfcp
+    port: 8805
+    targetPort: 8805
+    protocol: UDP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: upf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: upf
+  ports:
+  - name: pfcp
+    port: 8805
+    targetPort: 8805
+    protocol: UDP
+  - name: gtpu
+    port: 2152
+    targetPort: 2152
+    protocol: UDP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ausf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: ausf
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: udm-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: udm
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pcf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: pcf
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nssf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: nssf
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bsf-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: bsf
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: udr-svc
+  namespace: 5g-core
+spec:
+  selector:
+    app: udr
+  ports:
+  - port: 7777
+    targetPort: 7777
+  type: ClusterIP
